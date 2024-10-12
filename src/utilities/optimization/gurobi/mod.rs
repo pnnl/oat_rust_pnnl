@@ -21,7 +21,7 @@
 //!   - if you don't have one you can create one; just open an editor like sublime, atom, or vs code, and save a file with name `.profile`
 //!   - open the file, and add the following lines, replacing `user_name` with your user name
 //!     ```text
-//!     export GRB_LICENSE.md_FILE="/Users/user_name/gurobi.lic" # the license file
+//!     export GRB_LICENSE_FILE="/Users/user_name/gurobi.lic" # the license file
 //!     export GUROBI_HOME="/Library/gurobi1001/macos_universal2" # /Library/gurobi1001/macos_universal2/bin/gurobi_cl
 //!     ```
 //! - Save your changes

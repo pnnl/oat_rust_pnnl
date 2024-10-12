@@ -30,6 +30,6 @@ For information on contributing, see [`CONTRIBUTING.md`](https://github.com/Open
 
 ## License and attributions
 
-For inforamtion on copyright and licensing, see [`LICENSE.md`](https://github.com/OpenAppliedTopology/oat_rust/blob/main/LICENSE). 
+For inforamtion on copyright and licensing, see [`LICENSE`](https://github.com/OpenAppliedTopology/oat_rust/blob/main/LICENSE). 
 
 OAT is an extension of the ExHACT project, with major contributions from Pacific Northwest National Laboratory. For details see [`ATTRIBUTIONS.md`](https://github.com/OpenAppliedTopology/oat_rust/blob/main/ATTRIBUTIONS.md).
