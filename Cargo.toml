@@ -8,7 +8,7 @@ description     =   "User-friendly tools for applied topology"
 homepage        =   "https://openappliedtopology.github.io"
 repository      =   "https://github.com/OpenAppliedTopology/oat_rust"
 categories      =   ["mathematics", "science"]
-keywords        =   ["data", "geometry", "machine learning", "high performance computing"]
+keywords        =   ["data", "geometry", "ML", "HPC"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
