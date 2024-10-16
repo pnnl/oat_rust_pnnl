@@ -25,7 +25,7 @@ If you'd like to use OAT as a Python user, you'll want our sister library, oat_p
 
 **Rust users** 
 
-The oat_rust package is a pure Rust library. Rust libraries aren't installed in the same was as Python packages. Instead, users typically use Rust packages in one of two ways: (1) As a dependency for other Rust packages. In this case you'll have a folder containing code for another package, including a file named `Cargo.toml`. Add oat_rust to the list of dependencies in that file, and Rust will automatically download and use oat_rust when you compile your project. Here's an [example Cargo.toml](https://github.com/OpenAppliedTopology/oat_python/blob/main/Cargo.toml). The relevant line in that file is `oat_rust = "0.1.0"`.  Here 0.1.0 refers to a specific version of oat_rust. You'll want to check [Crates.io](https://crates.io/crates/oat_rust) to find the version number for the most recent version of oat. [Rust By Example](https://doc.rust-lang.org/rust-by-example/cargo/deps.html) gives a great explanation of dependencies! (2) To compile executable files. This allows you to write programs which can be executed even if you don't have Rust installed!  You'll need Rust to compile those programs first, though. Check out this example from [Rust By Example](https://doc.rust-lang.org/stable/rust-by-example/hello.html?highlight=executable#hello-world) to get started!
+The oat_rust package is a pure Rust library. Rust libraries aren't installed in the same was as Python packages. Instead, users typically use Rust packages in one of two ways: (1) As a dependency for other Rust packages. In this case you'll have a folder containing code for another package, including a file named `Cargo.toml`. Add oat_rust to the list of dependencies in that file, and Rust will automatically download and use oat_rust when you compile your project. Here's an [example Cargo.toml](https://github.com/OpenAppliedTopology/oat_python/blob/main/Cargo.toml). The relevant line in that file is `oat_rust = "X.Y.Z"`.  Here X.Y.Z refers to a specific version of oat_rust. You'll want to check [Crates.io](https://crates.io/crates/oat_rust) to find the version number for the most recent version of oat. [Rust By Example](https://doc.rust-lang.org/rust-by-example/cargo/deps.html) gives a great explanation of dependencies! (2) To compile executable files. This allows you to write programs which can be executed even if you don't have Rust installed!  You'll need Rust to compile those programs first, though. Check out this example from [Rust By Example](https://doc.rust-lang.org/stable/rust-by-example/hello.html?highlight=executable#hello-world) to get started!
 
 
 
@@ -35,7 +35,7 @@ There are two ways to view the documenation for this package.
 
 **Web browser** 
 
-Browse the documentation on [Crates.io](https://docs.rs/oat_rust/0.1.0/oat_rust/).
+Browse the documentation on [Crates.io](https://docs.rs/oat_rust).
 
 **Build from source** 
 
