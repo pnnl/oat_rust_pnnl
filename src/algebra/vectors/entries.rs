@@ -4,7 +4,7 @@
 //! An entry in a vector `v`, is a pair `(i, a)` such that `v[i] = a`.
 //! There are many ways to store a vector entry in computer memory.  For example, you could store it
 //! as a tuple `(i, a)`, as dictionary `{i: a}`, etc.  However, there are some operations that nearly everyone wants to perform on an entry,
-//! no matter what data structure has been used to store it.  These operations are encoded in traits:
+//! no matter what data structure has been used to store it.  These operations are encoded in [traits](crate::tutorials::traits):
 //! 
 //! * [KeyValGet](crate::algebra::vectors::entries::KeyValGet) 
 //!     allows a user to find the value of  `i` or `a`.  

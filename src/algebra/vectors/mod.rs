@@ -1,7 +1,7 @@
 //! Sparse vectors represented by iterators.
 //!
 //! 
-//! In OAT, any iterator that runs over [sparse vector entries](crate::algebra::vectors::entries) can be treated as a sparse vector.
+//! In OAT, any [iterator](https://doc.rust-lang.org/book/ch13-02-iterators.html) that runs over [sparse vector entries](crate::algebra::vectors::entries) can be treated as a sparse vector.
 //! 
 //! This module contains a number of tools for working with sparse vectors, organized into two groups: [operations], and [linear combinations](linear_combinations).
 //! 

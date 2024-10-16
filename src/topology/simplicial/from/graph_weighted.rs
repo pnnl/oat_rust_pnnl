@@ -266,34 +266,42 @@ pub fn get_cutoff_matrix
 //  FILTERED VIETORIS RIPS BOUNDARY MATRIX 
 //  ===========================================================
 
-/// # Examples 
-/// Boundary matrix represented by a matrix oracle.
+
+/// The differential matrix of the Vietoris Rips complex of the clique complex of a weighted graph.
 /// 
+/// For details on how this object is constructed, see the documentation for the [constructor](ChainComplexVrFiltered::new).
+/// 
+/// 
+/// # Example
+/// 
+/// In this example we compute the persistent homology of the point cloud `{ (1,0), (-1,0) }` consisting 
+/// of two points in the Euclidean plane.
 /// 
 /// ```
 /// // Import modules
 /// 
-/// use oat_rust::topology::simplicial::{simplices::filtered::SimplexFiltered, from::graph_weighted::{ChainComplexVrFiltered}};        
-/// use oat_rust::topology::point_cloud::unit_circle;    
+/// use oat_rust::topology::simplicial::{simplices::filtered::SimplexFiltered, from::graph_weighted::ChainComplexVrFiltered};
+/// use oat_rust::algebra::chains::factored::factor_boundary_matrix;
+/// use oat_rust::algebra::matrices::query::ViewRowAscend;        
+/// use oat_rust::algebra::matrices::types::third_party::IntoCSR;        
 /// use oat_rust::algebra::vectors::entries::KeyValGet;
-/// use oat_rust::algebra::rings::operator_structs::ring_native::{FieldRational64};    
-/// use oat_rust::algebra::matrices::debug::verify_viewmajorascend_compatible_with_viewminordescend;
-/// use oat_rust::algebra::matrices::query::{ViewColDescend, ViewRowAscend};
-/// use oat_rust::algebra::matrices::operations::umatch::row_major::{Umatch};    
-/// use oat_rust::algebra::matrices::types::third_party::IntoCSR;
-/// use oat_rust::utilities::order::{ is_sorted_strictly, OrderOperatorByKeyCutsom, OrderOperatorAuto, OrderOperatorAutoReverse};
+/// use oat_rust::algebra::rings::operator_structs::ring_native::FieldRational64;    
+/// use oat_rust::utilities::order::OrderOperatorAuto;
 /// use oat_rust::utilities::iterators::general::minmax;    
-/// use oat_rust::utilities::distances::{rowwise_distances};
+/// use oat_rust::utilities::distances::rowwise_distances;
 /// 
 /// use std::sync::Arc;
 /// use ordered_float::OrderedFloat;  
 /// use itertools::Itertools;      
 /// 
 /// 
-/// // Define a point cloud (points sampled from a unit circle)
+/// // Define a point cloud of two points on the x-axis in the Euclidean plane
 /// 
-/// let npoints = 20;
-/// let pcloud = unit_circle( npoints, Some(-1.0 .. 1.0));
+/// let pcloud: Vec<Vec<f64>>   =   vec![
+///                                     vec![  1.0, 0.0 ],            
+///                                     vec![ -1.0, 0.0 ],
+///                                 ];
+/// let npoints              =  pcloud.len();
 /// 
 /// // Get the distance matrix
 /// 
@@ -306,6 +314,7 @@ pub fn get_cutoff_matrix
 /// let dissimilarity_matrix = & dissimilarity_matrix_data;
 /// 
 /// // Determine the upper and lower bounds for filtration values we will consider
+/// // (this is computed as the enclosing radius)
 /// 
 /// let dissimilarity_value_min = OrderedFloat(0.0);        
 /// let dissimilarity_value_max = 
@@ -326,52 +335,108 @@ pub fn get_cutoff_matrix
 /// 
 /// // Define the chain complex
 /// 
-/// let chain_complex_data = ChainComplexVrFiltered::new( & dissimilarity_matrix, npoints, dissimilarity_value_max, dissimilarity_value_min, ring_operator );
+/// let chain_complex_data  =   ChainComplexVrFiltered::new( 
+///                                 & dissimilarity_matrix, 
+///                                 npoints, 
+///                                 dissimilarity_value_max, 
+///                                 dissimilarity_value_min, 
+///                                 ring_operator 
+///                             );
 /// let chain_complex = Arc::new(chain_complex_data);    
 /// 
 /// let dimension_max = 2;       
 /// let keymaj_vec = chain_complex.cliques_in_order(dimension_max); // runs over the row indices we want to use when computing the factorization
-/// let keymin_vec = chain_complex.cliques_in_order(dimension_max+1);
 /// 
-/// 
+/// // Define an iterator that runs over the row indices of the boundary matrix
 /// 
 /// let iter_keymaj = keymaj_vec.iter().cloned();    
 /// 
-/// // Check that oracle has strictly sorted rows
+/// // Get a Umatch decomposition  JM = DJ
 /// 
-/// for keymaj in iter_keymaj.clone() {        
-///     assert!( is_sorted_strictly( 
-///                                     & chain_complex.view_major_ascend(keymaj.clone()).collect_vec() , // this line accesses a row 
-///                                     & OrderOperatorByKeyCutsom::new( OrderOperatorAuto ) 
-///                                 ) );
-/// }      
-/// 
-/// // Check that oracle has strictly sorted columns
-/// 
-/// for keymaj in iter_keymaj.clone() {
-///     assert!( is_sorted_strictly(    & chain_complex.view_minor_descend(keymaj).iter().cloned().collect_vec() ,  // this line accesses a column
-///                                     & OrderOperatorByKeyCutsom::new( OrderOperatorAutoReverse::new() )  
-///                                 ) );
-/// }    
-///       
-/// 
-/// // Get a Umatch factorization
-/// 
-/// let umatch = Umatch::factor_with_clearing(
-///         chain_complex.clone(), 
-///         iter_keymaj.clone(), 
-///         ring_operator, 
-///         OrderOperatorAuto, 
-///         OrderOperatorAuto, 
-///     );         
+/// let factored_boundary_matrix = factor_boundary_matrix 
+///                                     (
+///                                         chain_complex.clone(), 
+///                                         ring_operator,
+///                                         OrderOperatorAuto,
+///                                         iter_keymaj.clone(),
+///                                     );
+///                                 
 /// 
 /// // Get the barcode
 /// 
-/// let dim_fn = |x: &SimplexFiltered<OrderedFloat<f64>> | x.dimension() as isize;
-/// let fil_fn = |x: &SimplexFiltered<OrderedFloat<f64>> | x.filtration();    
-/// let _barcode = oat_rust::algebra::chains::barcode::barcode( &umatch, iter_keymaj, dim_fn, fil_fn, true , true);
+/// let dim_fn      =   |x: &SimplexFiltered<OrderedFloat<f64>> | x.dimension() as isize;
+/// let fil_fn      =   |x: &SimplexFiltered<OrderedFloat<f64>> | x.filtration();    
+/// let barcode     =   oat_rust::algebra::chains::barcode::barcode( 
+///                         factored_boundary_matrix.umatch(), 
+///                         iter_keymaj.clone(), 
+///                         dim_fn, 
+///                         fil_fn, 
+///                         true , 
+///                         true
+///                     );
+/// 
+/// // Print the barcode                            
+/// 
+/// println!("\n\nBarcode");
+/// println!(    "-------");        
+/// for bar in barcode.bars() {
+///     println!("");
+///     println!("  Interval                            {:?}", bar.interval_f64()                                     );  
+///     println!("  Dimension                           {:?}", bar.dimension()                                        );          
+///     println!("  Birth simplex                       {:?}", & bar.birth_column()                                   );
+///     println!("  Death simplex                       {:?}", & bar.death_column()                                   );
+///     println!("  Num. simplices in cycle rep:        {:?}", bar.cycle_representative().as_ref().map(|x| x.len() )  );
+///     println!("  Num. simplices in bounding chain:   {:?}", bar.bounding_chain().as_ref().map(|x| x.len() )        );            
+/// }
+/// 
+/// // Print a cycle representative
+/// 
+/// let bar_number = 0usize;
+/// let bar = barcode.bar( bar_number ); // get the first bar in the barcode
+/// let cycle = bar.cycle_representative().as_ref().unwrap();
+/// let interval = bar.interval_f64();
+/// 
+/// println!("\n\nCycle representative for interval {:?}", interval );
+/// println!(    "--------------------------------------------");          
+/// 
+/// for term in cycle {
+///     println!("");
+///     println!("  Simplex                   {:?}", term.key());
+///     println!("  Coefficient               {:?}", term.val());            
+/// }
 /// ```
-
+/// 
+/// This should print the following:
+/// 
+/// ```bash
+/// Barcode
+/// -------
+/// 
+///   Interval                            (0.0, 2.0)
+///   Dimension                           0
+///   Birth simplex                       SimplexFiltered { filtration: OrderedFloat(0.0), vertices: [1] }
+///   Death simplex                       Some(SimplexFiltered { filtration: OrderedFloat(2.0), vertices: [0, 1] })
+///   Num. simplices in cycle rep:        Some(2)
+///   Num. simplices in bounding chain:   Some(1)
+/// 
+///   Interval                            (0.0, inf)
+///   Dimension                           0
+///   Birth simplex                       SimplexFiltered { filtration: OrderedFloat(0.0), vertices: [0] }
+///   Death simplex                       None
+///   Num. simplices in cycle rep:        Some(1)
+///   Num. simplices in bounding chain:   None
+/// 
+/// 
+/// Cycle representative for interval (0.0, 2.0)
+/// --------------------------------------------
+/// 
+///   Simplex                   SimplexFiltered { filtration: OrderedFloat(0.0), vertices: [1] }
+///   Coefficient               Ratio { numer: 1, denom: 1 }
+/// 
+///   Simplex                   SimplexFiltered { filtration: OrderedFloat(0.0), vertices: [0] }
+///   Coefficient               Ratio { numer: -1, denom: 1 }
+/// ```
+/// 
 #[derive(Clone,Debug,)]
 pub struct ChainComplexVrFiltered< DissimilarityMatrix, Filtration, Coefficient, RingOperator >
     where 
@@ -2082,5 +2147,145 @@ mod tests {
                     
         assert!( empty.eq( &simplices ) )        
     }
+
+
+
+
+
+
+
+
+
+
+    #[test]
+    fn doc_test_chain_complex_vr_filtered() {
+
+        use crate::topology::simplicial::{simplices::filtered::SimplexFiltered, from::graph_weighted::ChainComplexVrFiltered};
+        use crate::algebra::chains::factored::factor_boundary_matrix;
+        use crate::algebra::matrices::query::ViewRowAscend;        
+        use crate::algebra::matrices::types::third_party::IntoCSR;        
+        use crate::algebra::vectors::entries::KeyValGet;
+        use crate::algebra::rings::operator_structs::ring_native::FieldRational64;    
+        use crate::utilities::order::OrderOperatorAuto;
+        use crate::utilities::iterators::general::minmax;    
+        use crate::utilities::distances::rowwise_distances;
+
+        use std::sync::Arc;
+        use ordered_float::OrderedFloat;  
+        use itertools::Itertools;      
+
+
+        // Define a point cloud of two points on the x-axis in the Euclidean plane
+
+        let pcloud: Vec<Vec<f64>>   =   vec![
+                                            vec![  1.0, 0.0 ],            
+                                            vec![ -1.0, 0.0 ],
+                                        ];
+        let npoints              =  pcloud.len();
+
+        // Get the distance matrix
+
+        let dissimilarity_matrix_data
+            = rowwise_distances(pcloud)
+                .into_iter()
+                .map(|x| x.into_iter().enumerate().collect_vec() )
+                .collect_vec()
+                .into_csr( npoints, npoints );
+        let dissimilarity_matrix = & dissimilarity_matrix_data;
+
+        // Determine the upper and lower bounds for filtration values we will consider
+        // (this is computed as the enclosing radius)
+
+        let dissimilarity_value_min = OrderedFloat(0.0);        
+        let dissimilarity_value_max = 
+            minmax( 
+                    (0..npoints).map(
+                        |x| 
+                        dissimilarity_matrix.view_major_ascend(x).into_iter().map(
+                            |x| 
+                            x.val()
+                        ) 
+                    ) 
+            ).unwrap_or( dissimilarity_value_min.clone() 
+        );         
+
+        // Define the coefficient ring
+
+        let ring_operator = FieldRational64::new();
+
+        // Define the chain complex
+
+        let chain_complex_data  =   ChainComplexVrFiltered::new( 
+                                        & dissimilarity_matrix, 
+                                        npoints, 
+                                        dissimilarity_value_max, 
+                                        dissimilarity_value_min, 
+                                        ring_operator 
+                                    );
+        let chain_complex = Arc::new(chain_complex_data);    
+
+        let dimension_max = 2;       
+        let keymaj_vec = chain_complex.cliques_in_order(dimension_max); // runs over the row indices we want to use when computing the factorization
+
+        // Define an iterator that runs over the row indices of the boundary matrix
+
+        let iter_keymaj = keymaj_vec.iter().cloned();    
+
+        // Get a Umatch decomposition  JM = DJ
+
+        let factored_boundary_matrix = factor_boundary_matrix 
+                                            (
+                                                chain_complex.clone(), 
+                                                ring_operator,
+                                                OrderOperatorAuto,
+                                                iter_keymaj.clone(),
+                                            );
+                                        
+
+        // Get the barcode
+
+        let dim_fn      =   |x: &SimplexFiltered<OrderedFloat<f64>> | x.dimension() as isize;
+        let fil_fn      =   |x: &SimplexFiltered<OrderedFloat<f64>> | x.filtration();    
+        let barcode     =   crate::algebra::chains::barcode::barcode( 
+                                factored_boundary_matrix.umatch(), 
+                                iter_keymaj.clone(), 
+                                dim_fn, 
+                                fil_fn, 
+                                true , 
+                                true
+                            );
+
+        // Print the barcode                            
+        
+        println!("\n\nBarcode");
+        println!(    "-------");        
+        for bar in barcode.bars() {
+            println!("");
+            println!("  Interval                            {:?}", bar.interval_f64()                                     );  
+            println!("  Dimension                           {:?}", bar.dimension()                                        );          
+            println!("  Birth simplex                       {:?}", & bar.birth_column()                                   );
+            println!("  Death simplex                       {:?}", & bar.death_column()                                   );
+            println!("  Num. simplices in cycle rep:        {:?}", bar.cycle_representative().as_ref().map(|x| x.len() )  );
+            println!("  Num. simplices in bounding chain:   {:?}", bar.bounding_chain().as_ref().map(|x| x.len() )        );            
+        }
+
+        // Print a cycle representative
+
+        let bar_number = 0usize;
+        let bar = barcode.bar( bar_number ); // get the first bar in the barcode
+        let cycle = bar.cycle_representative().as_ref().unwrap();
+        let interval = bar.interval_f64();
+
+        println!("\n\nCycle representative for interval {:?}", interval );
+        println!(    "--------------------------------------------");          
+
+        for term in cycle {
+            println!("");
+            println!("  Simplex                   {:?}", term.key());
+            println!("  Coefficient               {:?}", term.val());            
+        }     
+    }
+
+
 
 }    

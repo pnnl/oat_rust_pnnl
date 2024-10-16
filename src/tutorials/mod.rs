@@ -1,7 +1,5 @@
-//! For beginners through advanced users
+//! Resources for coding in Rust (beginners through advanced users)
 
-pub mod rust;
-pub mod oat_quick_start;
-// pub mod homology_with_umatch;
-pub mod homology;
-pub mod persistent_homology;
+pub mod packages;
+pub mod clones_copies_references;
+pub mod traits;
