@@ -512,8 +512,6 @@ ViewRowDescend for
     type EntryMajor      =   ( Self::RowIndex, Self::Coefficient );
 
     fn view_major_descend( &self, keymaj: Self::RowIndex ) -> Self::ViewMajorDescend {
-
-        println!("GOT THROUGH THIS FILE ANE REMOVE THE DEBUG REQUIREMENTS");
         CoboundaryDowkerDescend::from_proximity_matrix( keymaj, & self.proximity_matrix, self.ring_operator.clone() )
     }
 }

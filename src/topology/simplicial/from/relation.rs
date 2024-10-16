@@ -103,8 +103,13 @@
 //!                         row_indices,
 //!                     );
 //!                 
-//! //  Printing results
-//! //  ----------------
+//! //  Printing Betti numbers
+//! //  ----------------------
+//! //
+//! // The following code should print the following:
+//! // 
+//! // The betti number in dimension 0 is 1.
+//! // The betti number in dimension 1 is 2.
 //!                 
 //! // Betti numbers.  For this computation we have to provide a
 //! // function that assigns a dimension to each index (i.e. to each simplex)
@@ -121,7 +126,17 @@
 //! }
 //! println!(""); // insert line break
 //! 
-//! // Cycle representatives for homology
+//! 
+//! //  Print cycle representatives for homology
+//! //  ----------------------------------------
+//! //
+//! // The following code should print the following:
+//! // 
+//! // The following are basis vectors for homology in dimensions 0 through 2
+//! // Basis vector 0 = [([0], 1)]
+//! // Basis vector 1 = [([2, 3], 1), ([0, 3], 2), ([0, 2], 1)]
+//! // Basis vector 2 = [([1, 3], 1), ([0, 3], 2), ([0, 1], 1)]
+//! 
 //! println!(
 //!         "The following are basis vectors for homology in dimensions 0 through {:?}",
 //!         max_homology_dimension,
@@ -133,6 +148,7 @@
 //!     println!("Basis vector {:?} = {:?}", cycle_number, cycle);
 //! }
 //! ```
+//! 
 //! 
 //! ### Try changing the coefficient ring
 //! 
@@ -368,8 +384,6 @@ ViewRowDescend for
     type ViewMajorDescendIntoIter   =   Self::ViewMajorDescend;
 
     fn view_major_descend( &self, keymaj: Self::RowIndex ) -> Self::ViewMajorDescend {
-
-        println!("GOT THROUGH THIS FILE ANE REMOVE THE DEBUG REQUIREMENTS");
         CoboundaryDowkerDescend::from_vec_of_dowker_sets( keymaj, & self.dowker_sets, self.ring_operator.clone() ).unwrap()
     }
 }
@@ -815,8 +829,6 @@ impl < Vertex, RingOperator, RingElement >
 
     fn next( &mut self ) -> Option< Self::Item >{
 
-        // println!("{:?} -- DELETE THIS AND ALL DEBUG REQUIREMENTS ON THIS IMPLEMENTATION OF ITER", &self);
-
         match self.next_cofacet_opt {
             None => { None }
             Some( ref mut next_cofacet ) => {
@@ -920,11 +932,11 @@ pub fn dowker_boundary_diagnostic<T: Clone + Hash + Debug + Ord>( dowker_simplic
 
 
     let keys = iter_keymaj.clone().collect_vec();
-    println!("keys: {:?}", keys );
+    // println!("keys: {:?}", keys );
 
     for dim in 0 .. maxdim+1 {
         let v: Vec<_> = subsimplices_dim_d_iter_descend( &dowker_sets, dim ).unwrap().collect();
-        println!("KEYS OF DIMENSION {:?} === {:?}", dim, v );
+        // println!("KEYS OF DIMENSION {:?} === {:?}", dim, v );
     }
 
     // check that the input is strictly sorted, first by dimension 
