@@ -1,17 +1,28 @@
+# About this fork
+
+This is a fork of the [oat_rust](https://github.com/OpenAppliedTopology/oat_rust) repository. The fork is maintained by Pacific Northwest National Laboratory (PNNL), which is the lead contributor to the Open Applied Topology project.
+
 # Open Applied Topology
 
-Open applied topology (OAT) is a library for fast, user-friendly algebra and topology.
+[Open applied topology (OAT)](https://openappliedtopology.github.io) is a library for fast, user-friendly algebra and topology. OAT has 
 
-## Installation and documentation
+- a user-friendly frontend for Python users, called [oat_python](https://github.com/OpenAppliedTopology/oat_python)
+- a fast backend written in Rust, called [oat_rust](https://github.com/OpenAppliedTopology/oat_rust) 
+
+This package contains the source code for [oat_rust](https://github.com/OpenAppliedTopology/oat_rust).
+
+# Caution: breaking changes
+
+OAT is in early stages of develpoment, and it's evolving quickly. Code that you write today may not work tomorrow, due to these changes. We will do our very best to make sure that if/when this happens, you will only need to make small changes to your code to fix the problem (e.g., updating the name of a function). However, please do bear this in mind as you write your code!
+
+# Installation, documentation, and contributing
 
 For instructions on installation and accessing documentation, see `CONTRIBUTING.md`
 
-## Additional information
+# Legal
 
-For information on **contributing**, see `CONTRIBUTING.md`.
+For information on copyright and licensing, see `LICENSE.md` and `DISCLAIMER.md`.
 
-For inforamtion on copyright and licensing, see `LICENSE.md` and `DISCLAIMER.md`.
-
-## Attributions
+# Attributions
 
 OAT-PNNL is an extension of OAT library available [here](https://github.com/ExHACT/OAT).  See `ATTRIBUTIONS.md` for details.
